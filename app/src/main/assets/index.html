@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Mind Intelligence v2.0</title>
+<style>
+:root{
+  --bg:#000;--card:rgba(30,30,35,0.7);--txt:#fff;--muted:#8e8e93;
+  --accent:#0a84ff;--green:#30d158;--pink:#ff375f;--purple:#bf5af2;
+  --blue:#38bdf8;--yellow:#ffd60a;--orange:#ff9f0a;
+  --r:22px;
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
+  --ai-1:#BC82F3;--ai-2:#F5B9EA;--ai-3:#8D9FFF;--ai-4:#AA6EEE;
+  --ai-5:#FF6778;--ai-6:#FFBA71;--ai-7:#C686FF;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,"SF Pro Display","SF Pro Text",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--txt)}
+body{display:flex;flex-direction:column}
+
+/* SCROLLABLE MAIN */
+.main{flex:1;overflow-y:auto;padding:16px;padding-bottom:100px;scroll-behavior:smooth}
+.main::-webkit-scrollbar{width:0}
+
+/* CARDS — Apple Liquid Glass */
+.card{
+  background:var(--card);
+  backdrop-filter:blur(40px) saturate(180%);
+  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  border:0.5px solid rgba(255,255,255,0.12);
+  border-top:0.5px solid rgba(255,255,255,0.18);
+  border-radius:var(--r);
+  padding:18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  margin-bottom:16px;
+}
+
+/* HERO WITH GLOW ORB */
+.hero{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(191,90,242,0.1),rgba(56,189,248,0.1))}
+.orb{position:relative;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-size:32px;animation:bob 3s ease-in-out infinite}
+.orb::before{content:"";position:absolute;inset:-12px;border-radius:50%;background:conic-gradient(from 0deg,var(--ai-1),var(--ai-2),var(--ai-3),var(--ai-4),var(--ai-5),var(--ai-6),var(--ai-7),var(--ai-1));filter:blur(14px);opacity:0.85;animation:spin 4s linear infinite}
+.orb::after{content:"";position:absolute;inset:-12px;border-radius:50%;background:conic-gradient(from 180deg,var(--ai-1),var(--ai-3),var(--ai-5),var(--ai-7),var(--ai-1));filter:blur(20px);opacity:0.5;animation:spin 4s linear infinite reverse}
+.orb .face{position:relative;z-index:2;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffe4d6,#ffb89a);display:grid;place-items:center;box-shadow:inset 0 2px 4px rgba(255,255,255,0.4)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.hero-info{flex:1}
+.hero-name{font-size:20px;font-weight:700;letter-spacing:-0.3px;display:flex;align-items:center;gap:6px}
+.verified{background:var(--accent);color:#fff;width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-size:10px}
+.pill{display:inline-block;background:rgba(48,209,88,0.15);color:var(--green);padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;margin-top:6px}
+
+/* WIDGETS */
+.widgets{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.widget{border-radius:var(--r);padding:16px;min-height:100px}
+.widget.purple{background:linear-gradient(160deg,var(--purple),#9d4edd);color:#fff}
+.widget.yellow{background:linear-gradient(160deg,var(--yellow),var(--orange));color:#000}
+.widget h4{font-size:11px;letter-spacing:0.5px;text-transform:uppercase;opacity:0.8;margin-bottom:6px}
+.widget .num{font-size:26px;font-weight:700;letter-spacing:-0.5px}
+
+/* INPUT BAR */
+.input-bar{display:flex;gap:8px;align-items:center}
+.input-bar input{flex:1;padding:14px 16px;border-radius:14px;border:0.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:15px;outline:none;min-height:44px}
+.input-bar button{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;border:0;padding:0 18px;border-radius:14px;font-weight:700;cursor:pointer;min-height:44px;transition:transform 0.2s var(--spring)}
+.input-bar button:active{transform:scale(0.95)}
+
+/* APPLE INLINE ENTITY CHIPS */
+.ai-text{font-size:16px;line-height:1.6;color:var(--txt);margin:8px 0}
+.ai-chip{
+  display:inline-flex;align-items:center;
+  background:rgba(255,255,255,0.12);
+  border:0.5px solid rgba(255,255,255,0.15);
+  border-radius:12px;padding:2px 10px 2px 2px;
+  margin:0 3px;vertical-align:middle;
+  backdrop-filter:blur(10px);
+  transition:transform 0.2s var(--spring);
+  cursor:pointer;
+}
+.ai-chip:active{transform:scale(0.95)}
+.ai-chip-icon{width:20px;height:20px;border-radius:5px;display:grid;place-items:center;font-size:11px;color:#fff;margin-right:5px;box-shadow:0 2px 4px rgba(0,0,0,0.3)}
+.ai-chip-text{color:var(--accent);font-size:14px;font-weight:600}
+.icon-notes{background:linear-gradient(135deg,#ffcc00,#ff9f0a)}
+.icon-voice{background:linear-gradient(135deg,#ff3b30,#d70015)}
+.icon-photos{background:linear-gradient(135deg,#ff2d55,#ff375f)}
+.icon-mail{background:linear-gradient(135deg,#0a84ff,#007aff)}
+.icon-web{background:linear-gradient(135deg,#30d158,#28cd41)}
+.icon-image{background:linear-gradient(135deg,#bf5af2,#9d4edd)}
+
+/* IMAGE PLAYGROUND / WAND */
+.playground{position:relative;min-height:200px;border-radius:16px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);overflow:hidden}
+.playground canvas{width:100%;height:200px;cursor:crosshair}
+.playground .orb-mask{position:absolute;inset:0;display:none;place-items:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:5}
+.playground .orb-mask.active{display:grid}
+.playground .orb-mask .big-orb{width:120px;height:120px;border-radius:50%;background:conic-gradient(from 0deg,var(--ai-1),var(--ai-2),var(--ai-3),var(--ai-4),var(--ai-5),var(--ai-6),var(--ai-7),var(--ai-1));filter:blur(20px);opacity:0.9;animation:spin 2s linear infinite}
+.playground .chips{position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px;z-index:3}
+.playground .result-img{width:100%;height:100%;object-fit:cover;border-radius:16px}
+.pg-controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.pg-controls button{flex:1;min-height:40px;padding:8px;border-radius:10px;border:0.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.08);color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+
+/* WRITING TOOLS */
+.writing-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.writing-tools button{padding:8px 12px;border-radius:10px;border:0.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.08);color:#fff;font-size:12px;cursor:pointer;transition:transform 0.2s var(--spring)}
+.writing-tools button:active{transform:scale(0.95)}
+
+/* CHARACTERS GRID */
+.chars-title{font-size:18px;font-weight:700;letter-spacing:-0.3px;margin:8px 0 12px;display:flex;justify-content:space-between;align-items:center}
+.chars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.char{background:var(--card);border:0.5px solid rgba(255,255,255,0.1);border-radius:var(--r);padding:16px 8px;text-align:center;cursor:pointer;transition:transform 0.2s var(--spring);position:relative}
+.char:active{transform:scale(0.94)}
+.char-orb{position:relative;width:50px;height:50px;border-radius:50%;margin:auto;animation:bob 3.2s ease-in-out infinite}
+.char-orb::before{content:"";position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(from 0deg,var(--ai-1),var(--ai-3),var(--ai-5),var(--ai-7),var(--ai-1));filter:blur(8px);opacity:0.7;animation:spin 5s linear infinite reverse}
+.char-orb .face{position:relative;z-index:2;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#e9d5ff);display:grid;place-items:center;font-size:24px}
+.char .cname{font-size:13px;font-weight:600;margin-top:8px}
+.char .cloc{font-size:11px;color:var(--muted)}
+.bubble{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%) scale(0.6);background:#fff;color:#000;border-radius:12px;padding:7px 10px;font-size:12px;font-weight:600;opacity:0;pointer-events:none;transition:0.25s var(--spring);white-space:nowrap;z-index:10;box-shadow:0 6px 16px rgba(0,0,0,0.3)}
+.bubble::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#fff}
+.char.speak .bubble{opacity:1;transform:translateX(-50%) scale(1)}
+
+/* DOCK */
+.dock{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(30,30,35,0.8);backdrop-filter:blur(30px) saturate(180%);border:0.5px solid rgba(255,255,255,0.12);border-top:0.5px solid rgba(255,255,255,0.18);border-radius:28px;padding:10px 14px;display:flex;gap:12px;z-index:50;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+.dock .app{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:22px;cursor:pointer;transition:transform 0.25s var(--spring)}
+.dock .app:active{transform:scale(0.8) translateY(-10px)}
+.dock .main-btn{background:conic-gradient(from 0deg,var(--ai-1),var(--ai-3),var(--ai-5),var(--ai-7),var(--ai-1));width:54px;height:54px;border-radius:16px;font-size:26px;animation:spin 6s linear infinite}
+
+/* THINKING PANEL (Qwen-style with snapshot streaming) */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;z-index:100}
+.overlay.open{display:flex}
+.sheet{background:rgba(30,30,35,0.95);backdrop-filter:blur(40px) saturate(180%);border-radius:24px 24px 0 0;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;padding:20px;animation:slideUp 0.35s var(--spring);border-top:0.5px solid rgba(255,255,255,0.15)}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.sheet .x{float:right;background:rgba(255,255,255,0.1);border:0;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;margin-bottom:12px}
+.rail{position:relative;padding-right:32px}
+.rail::before{content:"";position:absolute;right:12px;top:6px;bottom:6px;width:2px;background:rgba(255,255,255,0.1)}
+.node{position:relative;margin-bottom:20px;opacity:0;transform:translateY(12px);transition:0.4s var(--spring)}
+.node.show{opacity:1;transform:none}
+.node .dot{position:absolute;right:-32px;top:2px;width:26px;height:26px;border-radius:50%;background:rgba(30,30,35,0.95);border:0.5px solid rgba(255,255,255,0.15);display:grid;place-items:center;font-size:12px;z-index:2}
+.node .dot.spin{color:var(--accent)}
+.node .dot.done{color:var(--green);border-color:rgba(48,209,88,0.4)}
+.node .dot.bulb{color:var(--purple)}
+.node .dot.error{color:var(--pink)}
+.node h3{font-size:15px;font-weight:600;line-height:1.3}
+.node p{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+.node .snapshot{background:rgba(255,255,255,0.05);border-radius:10px;padding:10px;margin-top:8px;font-size:12px;font-family:monospace}
+.node .snapshot .field{display:flex;justify-content:space-between;padding:3px 0;border-bottom:0.5px solid rgba(255,255,255,0.05)}
+.node .snapshot .field:last-child{border-bottom:0}
+.node .snapshot .field .label{color:var(--muted)}
+.node .snapshot .field .value{color:var(--accent);font-weight:600}
+.node .result-img{width:100%;max-width:200px;border-radius:12px;margin-top:8px}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.1);border-top-color:var(--accent);border-radius:50%;animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes fadeImg{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+
+/* SETTINGS PANEL */
+.panel{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;z-index:100}
+.panel.open{display:flex}
+.panel-sheet{background:rgba(30,30,35,0.95);backdrop-filter:blur(40px) saturate(180%);border-radius:24px 24px 0 0;width:100%;max-width:500px;padding:20px;max-height:70vh;overflow-y:auto;animation:slideUp 0.3s var(--spring)}
+.panel-sheet h2{font-size:20px;font-weight:700;margin-bottom:16px;letter-spacing:-0.3px}
+.field{display:flex;gap:8px;margin:8px 0}
+.field input,.field select{flex:1;padding:12px;border-radius:12px;border:0.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:14px;outline:none;min-height:44px}
+.btn{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;border:0;padding:14px 16px;border-radius:14px;font-weight:600;cursor:pointer;font-size:15px;width:100%;min-height:44px;transition:transform 0.2s var(--spring)}
+.btn:active{transform:scale(0.98)}
+.li{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:rgba(255,255,255,0.05);margin:6px 0}
+.li .x{margin-left:auto;background:var(--pink);color:#fff;border:0;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px}
+.close-btn{float:right;background:rgba(255,255,255,0.1);border:0;color:#fff;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px}
+
+/* MODE TOGGLE (Dynamic Profiles) */
+.mode-toggle{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{flex:1;padding:10px;border-radius:12px;border:0.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all 0.2s var(--spring)}
+.mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="main">
+  <!-- HERO -->
+  <div class="card hero">
+    <div class="orb"><div class="face">🧠</div></div>
+    <div class="hero-info">
+      <div class="hero-name">Mind Intelligence <span class="verified">✔</span></div>
+      <div class="pill">v2.0 · Apple Intelligence</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">📍 Termux · On-Device AI</div>
+    </div>
+  </div>
+
+  <!-- MODE TOGGLE (Dynamic Profiles) -->
+  <div class="mode-toggle">
+    <div class="mode-btn active" data-mode="fast" onclick="setMode('fast',this)">⚡ Fast</div>
+    <div class="mode-btn" data-mode="deep" onclick="setMode('deep',this)">🧠 Deep</div>
+    <div class="mode-btn" data-mode="creative" onclick="setMode('creative',this)">🎨 Creative</div>
+  </div>
+
+  <!-- WIDGETS -->
+  <div class="widgets">
+    <div class="widget purple"><h4>TOGETHER</h4><div class="num" id="together">0 times</div></div>
+    <div class="widget yellow"><h4>NOTES</h4><div style="font-size:12px;opacity:0.8;margin-top:6px">Keep a private note...</div></div>
+  </div>
+
+  <!-- INPUT BAR -->
+  <div class="card">
+    <div class="input-bar">
+      <input id="userInput" placeholder="Ask Mind Intelligence..." onkeypress="if(event.key==='Enter')sendQuery()">
+      <button onclick="sendQuery()">Send</button>
+    </div>
+    <div class="writing-tools">
+      <button onclick="writingTool('summarize')">📝 Summarize</button>
+      <button onclick="writingTool('rewrite')">✍️ Rewrite</button>
+      <button onclick="writingTool('professional')">💼 Professional</button>
+      <button onclick="writingTool('friendly')">😊 Friendly</button>
+      <button onclick="openImageWand()">🪄 Image Wand</button>
+    </div>
+  </div>
+
+  <!-- IMAGE WAND / PLAYGROUND -->
+  <div class="card" id="imageWandCard" style="display:none">
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:8px">🪄 Image Wand</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Draw a sketch, then circle it to generate</p>
+    <div class="playground">
+      <canvas id="wandCanvas" width="400" height="200"></canvas>
+      <div class="orb-mask" id="orbMask"><div class="big-orb"></div></div>
+      <div class="chips" id="wandChips"></div>
+      <img id="wandResult" class="result-img" style="display:none">
+    </div>
+    <div class="pg-controls">
+      <button onclick="clearCanvas()">🗑️ Clear</button>
+      <button onclick="generateFromSketch()">✨ Generate</button>
+      <button onclick="closeImageWand()">✕ Close</button>
+    </div>
+    <div style="margin-top:10px">
+      <input id="wandPrompt" placeholder="Add description (optional)" style="width:100%;padding:10px;border-radius:10px;border:0.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:13px;outline:none">
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="card" style="text-align:center">
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">Try asking:</h3>
+    <div class="pills" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px">
+      <div class="pill-btn" onclick="sendQuery('What is the weather in New York?')" style="min-height:44px;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.1);padding:0 16px;border-radius:99px;font-size:14px;font-weight:500;display:flex;align-items:center;cursor:pointer">🌤️ Weather</div>
+      <div class="pill-btn" onclick="sendQuery('Generate a Genmoji of a cyberpunk cat')" style="min-height:44px;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.1);padding:0 16px;border-radius:99px;font-size:14px;font-weight:500;display:flex;align-items:center;cursor:pointer">🎨 Genmoji</div>
+      <div class="pill-btn" onclick="sendQuery('Search the web for latest AI news')" style="min-height:44px;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.1);padding:0 16px;border-radius:99px;font-size:14px;font-weight:500;display:flex;align-items:center;cursor:pointer">🌐 Web Search</div>
+      <div class="pill-btn" onclick="sendQuery('Summarize my notes')" style="min-height:44px;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.1);padding:0 16px;border-radius:99px;font-size:14px;font-weight:500;display:flex;align-items:center;cursor:pointer">📝 Notes</div>
+    </div>
+  </div>
+
+  <!-- CHARACTERS -->
+  <div class="chars-title"><span>🧑‍🤝‍🧑 Characters</span><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.1);border:0.5px dashed rgba(255,255,255,0.2);display:grid;place-items:center;cursor:pointer" onclick="openSettings()">＋</div></div>
+  <div class="chars" id="chars"></div>
+
+  <!-- RESPONSE AREA -->
+  <div id="responseArea" style="margin-top:16px"></div>
+</div>
+
+<!-- DOCK -->
+<nav class="dock">
+  <div class="app" style="background:linear-gradient(135deg,var(--pink),var(--purple))">🎵</div>
+  <div class="app" style="background:linear-gradient(135deg,var(--yellow),var(--orange))">🌸</div>
+  <div class="app main-btn" onclick="sendQuery('Hello Mind Intelligence!')">🧠</div>
+  <div class="app" style="background:linear-gradient(135deg,var(--green),var(--blue))">⟨/⟩</div>
+  <div class="app" style="background:linear-gradient(135deg,var(--purple),var(--pink))">📝</div>
+</nav>
+
+<!-- THINKING OVERLAY -->
+<div class="overlay" id="thinkOverlay"><div class="sheet"><button class="x" onclick="closeThinking()">✕</button><div class="rail" id="rail"></div></div></div>
+
+<!-- SETTINGS -->
+<div class="panel" id="settingsPanel"><div class="panel-sheet"><button class="close-btn" onclick="closeSettings()">✕</button><h2>⚙️ Manage Characters</h2><div id="settingsList"></div><hr style="border-color:rgba(255,255,255,0.1);margin:16px 0"><h3 style="font-size:17px;font-weight:600;margin-bottom:12px">➕ Add new</h3><div class="field"><input id="nName" placeholder="Name"></div><div class="field"><input id="nFace" placeholder="Emoji" value="🤖"></div><div class="field"><input id="nLoc" placeholder="Location"></div><button class="btn" onclick="addChar()">Add Character</button></div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+let chars=JSON.parse(localStorage.getItem('mi_chars')||'null')||[
+  {name:'Nova',face:'🧑‍🎤',loc:'New York',greet:'Hey! Tap me 🎙️'},
+  {name:'Byte',face:'🤖',loc:'Termux',greet:'Ready to build 🛠️'},
+  {name:'Rex',face:'🧟‍♂️',loc:'The Lab',greet:'I search the web 🌐'},
+  {name:'Echo',face:'🐬',loc:'Cloud',greet:'Want a Genmoji? 😀'},
+  {name:'Luna',face:'🌙',loc:'Night',greet:'Quiet time 🤫'},
+  {name:'Zap',face:'⚡',loc:'Fast',greet:'Let us go fast ⚡'}
+];
+let together=parseInt(localStorage.getItem('mi_together')||'0');
+let currentMode='fast';
+const save=()=>localStorage.setItem('mi_chars',JSON.stringify(chars));
+
+// CLOCK
+function tick(){const d=new Date(),h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0');}
+setInterval(tick,1000);tick();
+
+// RENDER
+function render(){
+  $('#chars').innerHTML=chars.map((c,i)=>`<div class="char" data-i="${i}"><div class="bubble">${c.greet}</div><div class="char-orb"><div class="face">${c.face}</div></div><div class="cname">${c.name}</div><div class="cloc">📍 ${c.loc}</div></div>`).join('');
+  $('#settingsList').innerHTML=chars.map((c,i)=>`<div class="li"><span style="font-size:22px">${c.face}</span><b>${c.name}</b><span style="color:var(--muted);font-size:12px;margin-left:6px">${c.loc}</span><button class="x" onclick="delChar(${i})">✖</button></div>`).join('')||'<p style="color:var(--muted);font-size:14px">No characters yet.</p>';
+  $('#together').textContent=together+' times';
+}
+$('#chars').addEventListener('click',e=>{
+  const card=e.target.closest('.char');if(!card)return;
+  card.classList.add('speak');together++;localStorage.setItem('mi_together',together);$('#together').textContent=together+' times';
+  const c=chars[+card.dataset.i];
+  if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(c.greet);speechSynthesis.speak(u);}
+  setTimeout(()=>card.classList.remove('speak'),2500);
+});
+
+// MODE TOGGLE (Dynamic Profiles)
+function setMode(mode,el){
+  currentMode=mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// SETTINGS
+function openSettings(){$('#settingsPanel').classList.add('open')}
+function closeSettings(){$('#settingsPanel').classList.remove('open')}
+function addChar(){
+  const n=$('#nName').value.trim()||'Bot';
+  chars.push({name:n,face:$('#nFace').value||'🤖',loc:$('#nLoc').value||'Unknown',greet:'Hi, I am '+n+'! 👋'});
+  save();render();$('#nName').value='';$('#nLoc').value='';closeSettings();
+}
+function delChar(i){chars.splice(i,1);save();render()}
+
+// ==========================================
+// 🧠 AGENT TOOL ENGINE (Apple Foundation Models Architecture)
+// ==========================================
+class AgentToolEngine {
+  constructor(){
+    this.tools=new Map();
+    this.history=[];
+    this.maxTokens=3500; // Apple's 4096 limit with buffer
+    this.instructions={
+      fast:"You are Mind Intelligence. Be concise and fast. Respond in 1-2 sentences.",
+      deep:"You are Mind Intelligence. Provide detailed, thorough responses with reasoning.",
+      creative:"You are Mind Intelligence. Be creative, playful, and imaginative in your responses."
+    };
+  }
+
+  registerTool(name,desc,params,fn,schema){
+    this.tools.set(name,{name,desc,params,execute:fn,schema});
+  }
+
+  // Build system prompt (Instructions — developer-controlled, high priority)
+  buildPrompt(){
+    let p=`You are Mind Intelligence. Current mode: ${currentMode}.\n`;
+    p+=`${this.instructions[currentMode]}\n\n`;
+    p+=`Available Tools:\n`;
+    this.tools.forEach(t=>{
+      p+=`\n### ${t.name}\nDescription: ${t.desc}\nParameters:\n`;
+      t.params.forEach(x=>p+=`  - ${x.name} (${x.type}): ${x.desc} ${x.required?'(REQUIRED)':''}\n`);
+    });
+    p+=`\nINSTRUCTIONS:\n`;
+    p+=`1. If a tool is needed, respond ONLY with JSON: {"action":"tool_call","tool_name":"name","parameters":{"key":"value"}}\n`;
+    p+=`2. If multiple tools needed, respond with array: {"action":"parallel_calls","calls":[{"tool_name":"...","parameters":{...}},{"tool_name":"...","parameters":{...}}]}\n`;
+    p+=`3. If done, respond with: {"action":"final_answer","text":"Your response using <chip> tags for apps"}`;
+    p+=`4. Use <chip icon="icon-name" text="App">Text</chip> for app references.\n`;
+    p+=`5. No markdown outside JSON. Only valid JSON.`;
+    return p;
+  }
+
+  // Context window management (Apple's 4096 token limit)
+  manageContext(){
+    let totalTokens=0;
+    for(let i=this.history.length-1;i>=0;i--){
+      totalTokens+=Math.ceil(this.history[i].content.length/4);
+      if(totalTokens>this.maxTokens){
+        this.history=this.history.slice(i+1);
+        break;
+      }
+    }
+  }
+
+  // JSON Schema Validation (Apple's @Generable constrained decoding equivalent)
+  validateToolCall(parsed){
+    if(!parsed.action)return{valid:false,error:"Missing action"};
+    if(parsed.action==="tool_call"){
+      if(!parsed.tool_name)return{valid:false,error:"Missing tool_name"};
+      const tool=this.tools.get(parsed.tool_name);
+      if(!tool)return{valid:false,error:`Unknown tool: ${parsed.tool_name}`};
+      if(!parsed.parameters)return{valid:false,error:"Missing parameters"};
+      // Validate required params
+      for(const p of tool.params){
+        if(p.required && !parsed.parameters[p.name]){
+          return{valid:false,error:`Missing required parameter: ${p.name}`};
+        }
+      }
+    }
+    return{valid:true};
+  }
+
+  async process(input,aiFn){
+    this.history.push({role:"user",content:input});
+    this.manageContext();
+    let turn=0,maxTurns=5;
+
+    while(turn<maxTurns){
+      turn++;
+      const msgs=[{role:"system",content:this.buildPrompt()},...this.history];
+      const res=await aiFn(msgs);
+
+      try{
+        const parsed=JSON.parse(res.trim());
+        const validation=this.validateToolCall(parsed);
+
+        if(!validation.valid){
+          // Feed error back to AI for retry (constrained decoding simulation)
+          this.history.push({role:"assistant",content:res});
+          this.history.push({role:"tool_result",content:`Validation error: ${validation.error}. Retry with correct format.`});
+          continue;
+        }
+
+        if(parsed.action==="tool_call"){
+          const tool=this.tools.get(parsed.tool_name);
+          const result=await tool.execute(parsed.parameters);
+          this.history.push({role:"assistant",content:res});
+          this.history.push({role:"tool_result",content:`Tool '${parsed.tool_name}' returned: ${JSON.stringify(result)}`});
+          return{type:"tool",tool:parsed.tool_name,result};
+        }
+        else if(parsed.action==="parallel_calls"){
+          // Execute multiple tools concurrently
+          const results=await Promise.all(parsed.calls.map(async call=>{
+            const tool=this.tools.get(call.tool_name);
+            if(!tool)return{error:`Unknown tool: ${call.tool_name}`};
+            return{tool:call.tool_name,result:await tool.execute(call.parameters)};
+          }));
+          this.history.push({role:"assistant",content:res});
+          this.history.push({role:"tool_result",content:`Parallel results: ${JSON.stringify(results)}`});
+          return{type:"parallel",results};
+        }
+        else if(parsed.action==="final_answer"){
+          this.history.push({role:"assistant",content:parsed.text});
+          return{type:"answer",text:parsed.text};
+        }
+      }catch(e){
+        // If JSON parse fails, treat as final answer
+        this.history.push({role:"assistant",content:res});
+        return{type:"answer",text:res};
+      }
+    }
+    return{type:"answer",text:"I got stuck in a loop. Please rephrase."};
+  }
+}
+
+const agent=new AgentToolEngine();
+
+// ==========================================
+// 🛠️ TOOLS (Web Search, Genmoji, Vision, Local Data, Writing)
+// ==========================================
+
+// 1. Weather Tool
+agent.registerTool("get_weather","Get current weather for a city.",
+  [{name:"city",type:"string",desc:"City name",required:true}],
+  async(a)=>{
+    // Mock — replace with real API
+    return{city:a.city,temp:"72°F",condition:"Sunny",humidity:"45%",feels_like:"68°F"};
+  }
+);
+
+// 2. Genmoji / Image Generation Tool
+agent.registerTool("generate_image","Generate an image or Genmoji.",
+  [{name:"prompt",type:"string",desc:"Image description",required:true},
+   {name:"style",type:"string",desc:"Style: emoji, sketch, illustration, animation",required:false}],
+  async(a)=>{
+    const style=a.style?`, ${a.style} style`:'';
+    const url=`https://image.pollinations.ai/prompt/${encodeURIComponent(a.prompt+", apple emoji style, 3d render, high quality, clean background"+style)}?width=512&height=512&nologo=true&seed=${Math.floor(Math.random()*1000)}`;
+    return{status:"success",image_url:url,prompt:a.prompt};
+  }
+);
+
+// 3. Web Search Tool
+agent.registerTool("search_web","Search the live internet.",
+  [{name:"query",type:"string",desc:"Search query",required:true}],
+  async(a)=>{
+    // Mock — replace with real search API
+    return{results:[
+      {title:`Top result for "${a.query}"`,url:"https://example.com",snippet:"This is a simulated search result."},
+      {title:`Second result for "${a.query}"`,url:"https://example.org",snippet:"Another relevant result."}
+    ]};
+  }
+);
+
+// 4. Vision Analysis Tool
+agent.registerTool("analyze_image","Analyze an uploaded image.",
+  [{name:"image_url",type:"string",desc:"URL of image to analyze",required:true}],
+  async(a)=>{
+    return{description:"A colorful image with various objects",tags:["colorful","objects","scene"]};
+  }
+);
+
+// 5. Local Data / Notes Tool
+agent.registerTool("get_notes","Access user's local notes.",
+  [{name:"query",type:"string",desc:"What to search for in notes",required:false}],
+  async(a)=>{
+    const notes=JSON.parse(localStorage.getItem('mi_notes')||'[]');
+    return{notes:notes.slice(0,5),count:notes.length};
+  }
+);
+
+// 6. Writing Tools (Summarize, Rewrite, etc.)
+agent.registerTool("writing_tool","Transform text with writing tools.",
+  [{name:"text",type:"string",desc:"Text to transform",required:true},
+   {name:"mode",type:"string",desc:"summarize, rewrite, professional, friendly",required:true}],
+  async(a)=>{
+    // Mock — replace with real LLM call
+    return{original:a.text,transformed:`[${a.mode} version of: ${a.text.substring(0,50)}...]`,mode:a.mode};
+  }
+);
+
+// ==========================================
+// 🤖 MOCK AI CALL (Replace with real Groq/OpenAI API)
+// ==========================================
+async function mockAICall(msgs){
+  const last=msgs[msgs.length-1].content.toLowerCase();
+  if(last.includes("weather"))return JSON.stringify({action:"tool_call",tool_name:"get_weather",parameters:{city:"New York"}});
+  if(last.includes("genmoji")||last.includes("image")||last.includes("draw"))return JSON.stringify({action:"tool_call",tool_name:"generate_image",parameters:{prompt:"cyberpunk cat",style:"emoji"}});
+  if(last.includes("search")||last.includes("web")||last.includes("news"))return JSON.stringify({action:"tool_call",tool_name:"search_web",parameters:{query:"latest AI news"}});
+  if(last.includes("note")||last.includes("summarize"))return JSON.stringify({action:"tool_call",tool_name:"get_notes",parameters:{}});
+  return JSON.stringify({action:"final_answer",text:`I processed: "${msgs[msgs.length-1].content}". Connect a real API for live responses.`});
+}
+
+// ==========================================
+// 🎨 UI: THINKING PANEL WITH SNAPSHOT STREAMING
+// ==========================================
+function closeThinking(){$('#thinkOverlay').classList.remove('open')}
+
+async function sendQuery(query){
+  if(!query)query=$('#userInput').value.trim();
+  if(!query)return;
+  $('#userInput').value='';
+
+  $('#rail').innerHTML='';
+  $('#thinkOverlay').classList.add('open');
+  together++;localStorage.setItem('mi_together',together);$('#together').textContent=together+' times';
+
+  function addStep(t,icon){
+    const d=document.createElement('div');d.className='node show';
+    d.innerHTML=`<div class="dot spin">${icon||'<span class="spin"></span>'}</div><h3>${t}</h3>`;
+    $('#rail').appendChild(d);
+    return d;
+  }
+
+  const step1=addStep("Parsing query...","🔍");
+  await sleep(400);
+  step1.querySelector('.dot').className='dot done';step1.querySelector('.dot').textContent='✓';
+
+  const step2=addStep("Retrieving context...","📚");
+  await sleep(400);
+  step2.querySelector('.dot').className='dot done';step2.querySelector('.dot').textContent='✓';
+
+  const step3=addStep("Selecting tool...","🛠️");
+  await sleep(300);
+
+  try{
+    const result=await agent.process(query,mockAICall);
+
+    step3.querySelector('.dot').className='dot done';step3.querySelector('.dot').textContent='✓';
+
+    if(result.type==="tool"){
+      // Show snapshot streaming
+      const snapDiv=document.createElement('div');snapDiv.className='snapshot';
+      snapDiv.innerHTML=`<div class="field"><span class="label">Tool</span><span class="value">${result.tool}</span></div><div class="field"><span class="label">Status</span><span class="value">Executing...</span></div>`;
+      step3.appendChild(snapDiv);
+      await sleep(500);
+      snapDiv.innerHTML=`<div class="field"><span class="label">Tool</span><span class="value">${result.tool}</span></div><div class="field"><span class="label">Status</span><span class="value" style="color:var(--green)">Complete</span></div><div class="field"><span class="label">Result</span><span class="value">${JSON.stringify(result.result).substring(0,50)}...</span></div>`;
+
+      const step4=addStep("Generating response...","✨");
+      await sleep(400);
+      step4.querySelector('.dot').className='dot done';step4.querySelector('.dot').textContent='✓';
+
+      const final=addStep("Thinking finished","💡");
+      final.querySelector('.dot').className='dot bulb';
+      final.innerHTML+=`<p>${formatResponse(result.result)}</p>`;
+      if(result.result.image_url){
+        final.innerHTML+=`<img class="result-img" src="${result.result.image_url}" style="animation:fadeImg 0.5s ease">`;
+      }
+    }
+    else if(result.type==="parallel"){
+      const step4=addStep("Parallel execution...","⚡");
+      result.results.forEach(r=>{
+        step4.innerHTML+=`<div class="snapshot"><div class="field"><span class="label">${r.tool}</span><span class="value" style="color:var(--green)">✓</span></div></div>`;
+      });
+      step4.querySelector('.dot').className='dot done';step4.querySelector('.dot').textContent='✓';
+    }
+    else{
+      const final=addStep("Thinking finished","💡");
+      final.querySelector('.dot').className='dot bulb';
+      final.innerHTML+=`<p>${formatResponse(result.text)}</p>`;
+    }
+  }catch(e){
+    step3.querySelector('.dot').className='dot error';step3.querySelector('.dot').textContent='!';
+    step3.innerHTML+=`<p style="color:var(--pink)">Error: ${e.message}</p>`;
+  }
+}
+
+function formatResponse(data){
+  if(typeof data==='string')return data;
+  // Convert to Apple-style inline chips
+  let html='';
+  if(data.city)html+=`Weather in <span class="ai-chip"><span class="ai-chip-icon icon-mail">🌤️</span><span class="ai-chip-text">${data.city}</span></span>: <b>${data.temp}</b>, ${data.condition}`;
+  else if(data.image_url)html+=`Generated image:<br><img class="result-img" src="${data.image_url}" style="animation:fadeImg 0.5s ease">`;
+  else if(data.results)html+=`Found ${data.results.length} results:<br>`+data.results.map(r=>`<div class="snapshot"><div class="field"><span class="label">${r.title}</span></div></div>`).join('');
+  else if(data.notes)html+=`You have ${data.count} notes.`;
+  else html+=JSON.stringify(data);
+  return html;
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+// ==========================================
+// 🪄 IMAGE WAND (Sketch-to-Image)
+// ==========================================
+let canvas,ctx,isDrawing=false,lastX=0,lastY=0;
+
+function openImageWand(){
+  $('#imageWandCard').style.display='block';
+  initCanvas();
+}
+function closeImageWand(){$('#imageWandCard').style.display='none'}
+
+function initCanvas(){
+  canvas=$('#wandCanvas');ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth;canvas.height=200;
+  ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.lineCap='round';
+  canvas.onmousedown=canvas.ontouchstart=e=>{isDrawing=true;const p=getPos(e);lastX=p.x;lastY=p.y;};
+  canvas.onmousemove=canvas.ontouchmove=e=>{if(!isDrawing)return;const p=getPos(e);ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(p.x,p.y);ctx.stroke();lastX=p.x;lastY=p.y;};
+  canvas.onmouseup=canvas.ontouchend=()=>isDrawing=false;
+}
+function getPos(e){const r=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top};}
+function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);$('#wandResult').style.display='none';$('#wandChips').innerHTML='';}
+
+async function generateFromSketch(){
+  const prompt=$('#wandPrompt').value||'sketch';
+  $('#orbMask').classList.add('active');
+
+  // Extract "chips" from prompt (simulating Apple's context extraction)
+  const chips=prompt.split(' ').filter(w=>w.length>3).slice(0,4);
+  $('#wandChips').innerHTML=chips.map(c=>`<span class="ai-chip" style="font-size:11px;padding:2px 8px"><span class="ai-chip-text">${c}</span></span>`).join('');
+
+  await sleep(2000);
+  $('#orbMask').classList.remove('active');
+
+  const url=`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt+", apple style, 3d render, high quality")}?width=512&height=512&nologo=true`;
+  const img=$('#wandResult');
+  img.src=url;img.style.display='block';
+  img.onload=()=>img.style.animation='fadeImg 0.5s ease';
+}
+
+// ==========================================
+// ✍️ WRITING TOOLS
+// ==========================================
+function writingTool(mode){
+  const text=prompt('Enter text to '+mode+':');
+  if(!text)return;
+  sendQuery(`Use writing tool to ${mode} this text: "${text}"`);
+}
+
+render();
+</script>
+</body>
+</html>
